@@ -1,7 +1,5 @@
 package com.s95ammar.rxcurrencyconverter.di.app;
 
-import android.app.Activity;
-
 import com.s95ammar.rxcurrencyconverter.di.viewModelModels.MainViewModelModule;
 import com.s95ammar.rxcurrencyconverter.views.activities.MainActivity;
 

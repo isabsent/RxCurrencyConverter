@@ -1,9 +1,8 @@
 package com.s95ammar.rxcurrencyconverter.views.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import com.s95ammar.rxcurrencyconverter.R;
 import com.s95ammar.rxcurrencyconverter.viewModels.MainViewModel;

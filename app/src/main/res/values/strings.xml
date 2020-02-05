@@ -1,3 +1,10 @@
 <resources>
 	<string name="app_name">RxCurrencyConverter</string>
+	<string name="from">From</string>
+	<string name="to">To</string>
+	<string name="amount">Amount</string>
+	<string name="convert">Convert</string>
+	<string name="result">Result:</string>
+	<string name="exchange_rate">Exchange rate:</string>
+	<string name="last_updated">Last updated:</string>
 </resources>
