@@ -10,12 +10,12 @@
 		android:id="@+id/textView_from"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_marginStart="32dp"
 		android:layout_marginTop="8dp"
 		android:text="@string/from"
 		android:textColor="@android:color/black"
 		android:textSize="24sp"
-		app:layout_constraintEnd_toStartOf="@+id/textView_amount"
-		app:layout_constraintHorizontal_bias="0.5"
+		app:layout_constraintHorizontal_chainStyle="spread"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,12 +34,11 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="8dp"
+		android:layout_marginEnd="32dp"
 		android:text="@string/to"
 		android:textColor="@android:color/black"
 		android:textSize="24sp"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.5"
-		app:layout_constraintStart_toEndOf="@+id/textView_amount"
 		app:layout_constraintTop_toTopOf="parent" />
 
 	<Spinner
@@ -60,9 +59,8 @@
 		android:text="@string/amount"
 		android:textColor="@android:color/black"
 		android:textSize="24sp"
-		app:layout_constraintEnd_toStartOf="@+id/textView_to"
-		app:layout_constraintHorizontal_bias="0.5"
-		app:layout_constraintStart_toEndOf="@+id/textView_from"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
 	<EditText
@@ -72,6 +70,7 @@
 		android:layout_marginTop="8dp"
 		android:ems="10"
 		android:inputType="numberDecimal"
+		android:textAlignment="center"
 		app:layout_constraintEnd_toEndOf="@+id/textView_amount"
 		app:layout_constraintStart_toStartOf="@+id/textView_amount"
 		app:layout_constraintTop_toBottomOf="@+id/textView_amount" />
@@ -166,7 +165,7 @@
 		android:layout_marginTop="32dp"
 		android:drawableTop="@drawable/ic_warning"
 		android:drawablePadding="8dp"
-		android:text="Warning!\nConnection failed.\nInformation might be outdated."
+		android:text="@string/warning_message"
 		android:textAlignment="center"
 		android:textColor="@android:color/holo_red_dark"
 		android:textSize="24sp"
@@ -175,5 +174,18 @@
 		app:layout_constraintStart_toStartOf="@+id/textView_last_updated"
 		app:layout_constraintTop_toBottomOf="@+id/textView_last_updated_value"
 		tools:visibility="visible" />
+
+	<ProgressBar
+		android:id="@+id/progressBar"
+		style="?android:attr/progressBarStyle"
+		android:theme="@android:style/Theme.Black"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="@+id/button_convert"
+		app:layout_constraintStart_toStartOf="@+id/button_convert"
+		app:layout_constraintTop_toBottomOf="@+id/button_convert"
+		android:visibility="gone"
+		app:layout_constraintVertical_bias="0.25" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

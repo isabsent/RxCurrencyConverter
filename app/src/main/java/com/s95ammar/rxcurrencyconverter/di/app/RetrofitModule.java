@@ -14,9 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.s95ammar.rxcurrencyconverter.util.Constants.BASE_URL;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.HEADER_HOST;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.HEADER_HOST_VALUE;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.HEADER_KEY;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.HEADER_KEY_VALUE;
 
 @Module
 public abstract class RetrofitModule {
@@ -27,8 +25,8 @@ public abstract class RetrofitModule {
 		return new OkHttpClient.Builder()
 				.addInterceptor(chain -> {
 					Request authorisedRequest = chain.request().newBuilder()
-							.addHeader(HEADER_HOST, HEADER_HOST_VALUE)
-							.addHeader(HEADER_KEY, HEADER_KEY_VALUE)
+							.addHeader(HEADER_HOST.getKey(), HEADER_HOST.getValue())
+							.addHeader(HEADER_KEY.getKey(), HEADER_KEY.getValue())
 							.build();
 					return chain.proceed(authorisedRequest);
 				})
