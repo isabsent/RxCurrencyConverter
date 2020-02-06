@@ -1,15 +1,15 @@
 package com.s95ammar.rxcurrencyconverter.models.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "currencies")
 public class Currency {
 
-	@PrimaryKey(autoGenerate = true)
-	private int id;
-
+	@PrimaryKey
+	@NonNull
 	private String code;
 
 	private String name;
@@ -19,14 +19,6 @@ public class Currency {
 
 	@ColumnInfo(name = "last_updated")
 	private long lastUpdated;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getCode() {
 		return code;
@@ -65,5 +57,15 @@ public class Currency {
 		this.name = name;
 		this.usdRate = usdRate;
 		this.lastUpdated = lastUpdated;
+	}
+
+	@Override
+	public String toString() {
+		return "Currency{" +
+				"code='" + code + '\'' +
+				", name='" + name + '\'' +
+				", usdRate=" + usdRate +
+				", lastUpdated=" + lastUpdated +
+				'}';
 	}
 }

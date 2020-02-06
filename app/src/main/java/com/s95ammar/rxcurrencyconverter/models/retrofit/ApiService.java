@@ -13,6 +13,11 @@ public interface ApiService {
 			@Query("amount") int amount
 	);
 
+	@GET("convert")
+	Single<ConversionResponse> getRatesOf(
+			@Query("from") String from
+	);
+
 	@GET("list")
 	Single<CurrenciesResponse> getCurrencyList();
 

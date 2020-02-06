@@ -81,7 +81,7 @@ public class ConversionResponse {
 				'}';
 	}
 
-	static class TargetCurrency {
+	public static class TargetCurrency {
 		@SerializedName("currency_name")
 		private String currencyName;
 
