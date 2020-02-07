@@ -1,6 +1,5 @@
 package com.s95ammar.rxcurrencyconverter.views.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,14 +19,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends DaggerAppCompatActivity {
 	private final String t = "log_" + getClass().getSimpleName();
-
-	private CompositeDisposable disposables = new CompositeDisposable();
 
 	@Inject
 	ViewModelProvider.Factory factory;
@@ -51,14 +45,14 @@ public class MainActivity extends DaggerAppCompatActivity {
 		viewModel.getOnDatabasePopulation().observe(this, this::observeDatabasePopulation);
 	}
 
-	private void observeDatabasePopulation(Result<Void> result) {
+	private void observeDatabasePopulation(Result<List<String>> result) {
 		switch (result.status) {
 			case LOADING:
 				setLoading(true);
 				break;
 			case SUCCESS:
 				setLoading(false);
-				setUpSpinners();
+				setUpSpinners(result.data);
 				break;
 
 			case ERROR:
@@ -69,14 +63,14 @@ public class MainActivity extends DaggerAppCompatActivity {
 		}
 	}
 
-	private void observeSavedDataCheck(Result<Void> result) {
+	private void observeSavedDataCheck(Result<List<String>> result) {
 		switch (result.status) {
 			case LOADING:
 				setLoading(true);
 				break;
 			case SUCCESS:
 				setLoading(false);
-				setUpSpinners();
+				setUpSpinners(result.data);
 //				TODO: SHOW WARNING
 				break;
 			case ERROR:
@@ -87,18 +81,9 @@ public class MainActivity extends DaggerAppCompatActivity {
 
 	}
 
-	private void setUpSpinners() {
-		final Context activity = this;
-		disposables.add(
-				viewModel.getAllCurrencies()
-						.subscribeOn(Schedulers.io())
-						.observeOn(AndroidSchedulers.mainThread())
-						.subscribe(currencies -> {
-							List<String> rows = viewModel.getCurrenciesNamesList(currencies);
-							spinnerFrom.setAdapter(new ArrayAdapter<>(activity, R.layout.spinner_row, rows));
-							spinnerTo.setAdapter(new ArrayAdapter<>(activity, R.layout.spinner_row, rows));
-						})
-		);
+	private void setUpSpinners(List<String> spinnerRows) {
+		spinnerFrom.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
+		spinnerTo.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
 	}
 
 	private void setLoading(boolean isLoading) {
@@ -109,9 +94,4 @@ public class MainActivity extends DaggerAppCompatActivity {
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		disposables.clear();
-	}
 }

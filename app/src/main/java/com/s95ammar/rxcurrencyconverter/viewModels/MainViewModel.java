@@ -18,13 +18,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.s95ammar.rxcurrencyconverter.util.Constants.USD;
@@ -36,8 +34,8 @@ public class MainViewModel extends ViewModel {
 
 	private CompositeDisposable disposables = new CompositeDisposable();
 
-	private SingleLiveEvent<Result<Void>> onDatabasePopulation = new SingleLiveEvent<>();
-	private SingleLiveEvent<Result<Void>> onSavedDataChecked = new SingleLiveEvent<>();
+	private SingleLiveEvent<Result<List<String>>> onDatabasePopulation = new SingleLiveEvent<>();
+	private SingleLiveEvent<Result<List<String>>> onSavedDataChecked = new SingleLiveEvent<>();
 
 	@Inject
 	public MainViewModel(Repository repository) {
@@ -46,7 +44,6 @@ public class MainViewModel extends ViewModel {
 	}
 
 	private void populateDatabaseFromApi() {
-		Log.d(t, "populateDatabaseFromApi: ");
 		onDatabasePopulation.setValue(Result.loading());
 		getRatesOf(USD)
 				.subscribeOn(Schedulers.io())
@@ -82,7 +79,7 @@ public class MainViewModel extends ViewModel {
 		disposables.add(insertCurrencies(currencies)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(() -> onDatabasePopulation.setValue(Result.success())));
+				.subscribe(() -> onDatabasePopulation.setValue(Result.success(getCurrenciesNamesList(currencies)))));
 	}
 
 
@@ -102,7 +99,7 @@ public class MainViewModel extends ViewModel {
 						if (currencies.isEmpty())
 							onSavedDataChecked.setValue(Result.error("empty list")); // TODO: USE CONSTANT OR StringRes
 						else
-							onSavedDataChecked.setValue(Result.success());
+							onSavedDataChecked.setValue(Result.success(getCurrenciesNamesList(currencies)));
 					}
 
 					@Override
@@ -112,7 +109,7 @@ public class MainViewModel extends ViewModel {
 				});
 	}
 
-	public List<String> getCurrenciesNamesList(List<Currency> currencies) {
+	private List<String> getCurrenciesNamesList(List<Currency> currencies) {
 		List<String> names = new ArrayList<>(currencies.size());
 		for (int i = 0; i < currencies.size(); i++) {
 			Currency currency = currencies.get(i);
@@ -152,11 +149,11 @@ public class MainViewModel extends ViewModel {
 
 // Getters & setters
 
-	public LiveData<Result<Void>> getOnDatabasePopulation() {
+	public LiveData<Result<List<String>>> getOnDatabasePopulation() {
 		return onDatabasePopulation;
 	}
 
-	public LiveData<Result<Void>> getOnSavedDataChecked() {
+	public LiveData<Result<List<String>>> getOnSavedDataChecked() {
 		return onSavedDataChecked;
 	}
 
