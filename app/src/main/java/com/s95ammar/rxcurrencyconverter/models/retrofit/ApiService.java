@@ -18,8 +18,5 @@ public interface ApiService {
 			@Query("from") String from
 	);
 
-	@GET("list")
-	Single<CurrenciesResponse> getCurrencyList();
-
 
 }

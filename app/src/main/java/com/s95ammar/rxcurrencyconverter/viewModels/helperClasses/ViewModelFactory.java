@@ -1,4 +1,4 @@
-package com.s95ammar.rxcurrencyconverter.di.viewModelModels;
+package com.s95ammar.rxcurrencyconverter.viewModels.helperClasses;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

@@ -20,6 +20,9 @@ public interface CurrencyDao {
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	Completable insertCurrency(Currency currency);
 
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	Completable insertCurrencies(List<Currency> currencies);
+
 	@Update
 	Completable updateCurrency(Currency currency);
 
