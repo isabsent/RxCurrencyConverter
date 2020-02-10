@@ -25,6 +25,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.USD;
 
 public class MainViewModel extends ViewModel {
@@ -111,6 +112,7 @@ public class MainViewModel extends ViewModel {
 
 	private List<String> getCurrenciesNamesList(List<Currency> currencies) {
 		List<String> names = new ArrayList<>(currencies.size());
+		names.add(BLANK);
 		for (int i = 0; i < currencies.size(); i++) {
 			Currency currency = currencies.get(i);
 			names.add(currency.getCode() + " - " + currency.getName());

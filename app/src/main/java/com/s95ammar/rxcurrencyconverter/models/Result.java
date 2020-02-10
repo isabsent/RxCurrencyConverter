@@ -17,7 +17,7 @@ public class Result<T> {
 	public final String message;
 
 
-	public Result(@NonNull AuthStatus status, @Nullable T data, @Nullable String message) {
+	private Result(@NonNull AuthStatus status, @Nullable T data, @Nullable String message) {
 		this.status = status;
 		this.data = data;
 		this.message = message;

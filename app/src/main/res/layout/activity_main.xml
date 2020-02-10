@@ -23,67 +23,67 @@
 		android:id="@+id/spinner_from"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		app:layout_constraintBottom_toBottomOf="@+id/editText_amount"
-		app:layout_constraintEnd_toEndOf="@+id/textView_from"
-		app:layout_constraintStart_toStartOf="@+id/textView_from"
-		app:layout_constraintTop_toBottomOf="@+id/textView_from" />
+		android:layout_marginEnd="32dp"
+		app:layout_constraintBottom_toBottomOf="@+id/textView_from"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="@+id/guideline"
+		app:layout_constraintTop_toTopOf="@+id/textView_from" />
 
 	<TextView
 		android:id="@+id/textView_to"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:layout_marginEnd="32dp"
+		android:layout_marginTop="24dp"
 		android:text="@string/to"
 		android:textColor="@android:color/black"
 		android:textSize="24sp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintStart_toStartOf="@+id/textView_amount"
+		app:layout_constraintTop_toBottomOf="@+id/textView_amount" />
 
 	<Spinner
 		android:id="@+id/spinner_to"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		app:layout_constraintBottom_toBottomOf="@+id/editText_amount"
-		app:layout_constraintEnd_toEndOf="@+id/textView_to"
-		app:layout_constraintStart_toStartOf="@+id/textView_to"
-		app:layout_constraintTop_toBottomOf="@+id/textView_to" />
+		app:layout_constraintBottom_toBottomOf="@+id/textView_to"
+		app:layout_constraintEnd_toEndOf="@+id/editText_amount"
+		app:layout_constraintStart_toStartOf="@+id/guideline"
+		app:layout_constraintTop_toTopOf="@+id/textView_to" />
 
 	<TextView
 		android:id="@+id/textView_amount"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
+		android:layout_marginTop="24dp"
+
 		android:text="@string/amount"
 		android:textColor="@android:color/black"
 		android:textSize="24sp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintStart_toStartOf="@+id/textView_from"
+		app:layout_constraintTop_toBottomOf="@+id/textView_from" />
 
 	<EditText
 		android:id="@+id/editText_amount"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
 		android:ems="10"
 		android:inputType="numberDecimal"
 		android:textAlignment="center"
-		app:layout_constraintEnd_toEndOf="@+id/textView_amount"
-		app:layout_constraintStart_toStartOf="@+id/textView_amount"
-		app:layout_constraintTop_toBottomOf="@+id/textView_amount" />
+		app:layout_constraintBottom_toBottomOf="@+id/textView_amount"
+		app:layout_constraintEnd_toEndOf="@+id/spinner_from"
+		app:layout_constraintStart_toStartOf="@+id/guideline"
+		app:layout_constraintTop_toTopOf="@+id/textView_amount" />
 
 	<Button
 		android:id="@+id/button_convert"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
+		android:layout_marginStart="32dp"
 		android:layout_marginTop="24dp"
+		android:layout_marginEnd="32dp"
 		android:text="@string/convert"
-		app:layout_constraintEnd_toEndOf="@+id/textView_to"
-		app:layout_constraintStart_toStartOf="@+id/textView_from"
-		app:layout_constraintTop_toBottomOf="@+id/editText_amount" />
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/textView_to" />
 
 	<TextView
 		android:id="@+id/textView_result"
@@ -187,5 +187,12 @@
 		app:layout_constraintTop_toBottomOf="@+id/button_convert"
 		android:visibility="gone"
 		app:layout_constraintVertical_bias="0.25" />
+
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		app:layout_constraintGuide_percent="0.50" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

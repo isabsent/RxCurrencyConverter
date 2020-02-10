@@ -10,5 +10,7 @@ public class Constants {
 	public static final String DATABASE_NAME  = "currencies";
 
 	public static final String USD = "USD";
+	public static final String BLANK = "";
+	public static final int CURRENCY_CODE_LENGTH = 3;
 
 }
