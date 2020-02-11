@@ -32,6 +32,9 @@ public class Repository {
 		return api.getRatesOf(from);
 	}
 
+	public Single<ConversionResponse> getRate(String from, String to) {
+		return api.getRate(from, to);
+	}
 
 //	DAO
 

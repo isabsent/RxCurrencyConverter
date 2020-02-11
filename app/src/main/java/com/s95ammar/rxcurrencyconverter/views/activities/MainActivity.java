@@ -1,15 +1,19 @@
 package com.s95ammar.rxcurrencyconverter.views.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.s95ammar.rxcurrencyconverter.R;
@@ -23,6 +27,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import dagger.android.support.DaggerAppCompatActivity;
 
 import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
@@ -41,8 +46,14 @@ public class MainActivity extends DaggerAppCompatActivity {
 	@BindView(R.id.spinner_to)
 	Spinner spinnerTo;
 
-	@BindView((R.id.progressBar))
+	@BindView(R.id.editText_amount)
+	EditText editTextAmount;
+
+	@BindView(R.id.progressBar)
 	ProgressBar progressBar;
+
+	@BindView(R.id.textView_warning_error)
+	TextView tvWarningError;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,50 +61,41 @@ public class MainActivity extends DaggerAppCompatActivity {
 		setContentView(R.layout.activity_main);
 		viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
 		ButterKnife.bind(this);
-		viewModel.getOnDatabasePopulation().observe(this, this::observeDatabasePopulation);
+		viewModel.getOnDatabaseUpdate().observe(this, this::observeDatabaseUpdate);
+		viewModel.getSpinnersList().observe(this, this::setUpSpinners);
 	}
 
-	private void observeDatabasePopulation(Result<List<String>> result) {
+	private void observeDatabaseUpdate(Result result) {
+		Log.d(t, "observeDatabaseUpdate: " + result.status);
 		switch (result.status) {
 			case LOADING:
 				setLoading(true);
 				break;
 			case SUCCESS:
 				setLoading(false);
-				setUpSpinners(result.data);
 				break;
-
 			case ERROR:
 				setLoading(false);
-				viewModel.checkSavedData();
-				viewModel.getOnSavedDataChecked().observe(this, this::observeSavedDataCheck);
+				viewModel.getOnOfflineDataChecked().observe(this, this::observeOfflineDataCheck);
 				break;
 		}
 	}
 
-	private void observeSavedDataCheck(Result<List<String>> result) {
+	private void observeOfflineDataCheck(Result result) {
 		switch (result.status) {
 			case LOADING:
 				setLoading(true);
 				break;
 			case SUCCESS:
 				setLoading(false);
-				setUpSpinners(result.data);
-//				TODO: SHOW WARNING
+				showOutOfDateWarning();
 				break;
 			case ERROR:
 				setLoading(false);
-//				TODO: SHOW ERROR
+				showDataMissingError();
 				break;
 		}
 
-	}
-
-	private void setUpSpinners(List<String> spinnerRows) {
-		spinnerFrom.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
-		spinnerFrom.setOnItemSelectedListener(getSpinnersOnItemSelectedListener());
-		spinnerTo.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
-		spinnerTo.setOnItemSelectedListener(getSpinnersOnItemSelectedListener());
 	}
 
 	private void setLoading(boolean isLoading) {
@@ -102,27 +104,52 @@ public class MainActivity extends DaggerAppCompatActivity {
 		} else {
 			progressBar.setVisibility(View.GONE);
 		}
+		editTextAmount.setEnabled(!isLoading);
+		spinnerFrom.setEnabled(!isLoading);
+		spinnerFrom.setEnabled(!isLoading);
+
 	}
 
-	private AdapterView.OnItemSelectedListener getSpinnersOnItemSelectedListener() {
-		return new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				String selection = (String) parent.getSelectedItem();
-				if (!selection.equals(BLANK))
-					((TextView) view.findViewById(R.id.textView_spinner)).setText(selection.substring(0, CURRENCY_CODE_LENGTH));
-			}
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-			}
-		};
+	private void setUpSpinners(List<String> spinnerRows) {
+		if (!spinnerRows.isEmpty()) {
+			spinnerFrom.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
+			spinnerTo.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
+		}
+	}
+
+	@OnItemSelected({R.id.spinner_from, R.id.spinner_to})
+	void getSpinnersOnItemSelectedListener(AdapterView<?> parent, View view) {
+		String selection = (String) parent.getSelectedItem();
+		if (view != null && !selection.equals(BLANK))
+			((TextView) view.findViewById(R.id.textView_spinner)).setText(selection.substring(0, CURRENCY_CODE_LENGTH));
+	}
+
+	private void showOutOfDateWarning() {
+		tvWarningError.setVisibility(View.VISIBLE);
+		tvWarningError.setTextColor(ContextCompat.getColor(this, R.color.colorWarning));
+		tvWarningError.setText(R.string.warning_message);
+	}
+
+	private void showDataMissingError() {
+		tvWarningError.setVisibility(View.VISIBLE);
+		tvWarningError.setTextColor(ContextCompat.getColor(this, R.color.colorError));
+		tvWarningError.setText(R.string.error_message);
+	}
+
+	private String getFromCode() {
+		return ((TextView) spinnerFrom.getSelectedView().findViewById(R.id.textView_spinner)).getText().toString();
+	}
+
+	private String getToCode() {
+		return ((TextView) spinnerTo.getSelectedView().findViewById(R.id.textView_spinner)).getText().toString();
 	}
 
 	@OnClick(R.id.button_convert)
 	void convert() {
-		String fromCode = (String) spinnerFrom.getSelectedItem();
-		String toCode = (String) spinnerTo.getSelectedItem();
-		// TODO
+		String input = editTextAmount.getText().toString();
+		viewModel.getCurrencyByCode(getFromCode()); // TODO: observe update
+		viewModel.getCurrencyByCode(getToCode()); // TODO: observe update
+		viewModel.convert(getFromCode(), getToCode(), (input.isEmpty() ? 1.0 : Double.valueOf(input)));
 	}
 
 }

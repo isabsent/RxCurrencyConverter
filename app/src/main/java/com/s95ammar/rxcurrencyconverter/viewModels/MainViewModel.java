@@ -2,7 +2,9 @@ package com.s95ammar.rxcurrencyconverter.viewModels;
 
 import android.util.Log;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.s95ammar.rxcurrencyconverter.models.Repository;
@@ -35,8 +37,10 @@ public class MainViewModel extends ViewModel {
 
 	private CompositeDisposable disposables = new CompositeDisposable();
 
-	private SingleLiveEvent<Result<List<String>>> onDatabasePopulation = new SingleLiveEvent<>();
-	private SingleLiveEvent<Result<List<String>>> onSavedDataChecked = new SingleLiveEvent<>();
+	private SingleLiveEvent<Result> onDatabaseUpdate = new SingleLiveEvent<>();
+	private SingleLiveEvent<Result> onOfflineDataChecked = new SingleLiveEvent<>();
+
+	private MutableLiveData<List<String>> spinnersList = new MutableLiveData<>();
 
 	@Inject
 	public MainViewModel(Repository repository) {
@@ -45,7 +49,7 @@ public class MainViewModel extends ViewModel {
 	}
 
 	private void populateDatabaseFromApi() {
-		onDatabasePopulation.setValue(Result.loading());
+		onDatabaseUpdate.setValue(Result.loading());
 		getRatesOf(USD)
 				.subscribeOn(Schedulers.io())
 				.observeOn(Schedulers.computation())
@@ -57,35 +61,42 @@ public class MainViewModel extends ViewModel {
 
 					@Override
 					public void onSuccess(ConversionResponse conversionResponse) {
-						populateDataBase(conversionResponse.getRates());
+						List<Currency> currencies = new ArrayList<>(conversionResponse.getRates().size());
+						for (Map.Entry<String, ConversionResponse.TargetCurrency> entry : conversionResponse.getRates().entrySet())
+							currencies.add(new Currency(
+									entry.getKey(),
+									entry.getValue().getCurrencyName(),
+									entry.getValue().getRate(),
+									System.currentTimeMillis()
+							));
+
+						populateDataBase(currencies);
+
 					}
 
 					@Override
 					public void onError(Throwable e) {
 						Log.d(t, "onError: " + e.getLocalizedMessage());
-						onDatabasePopulation.postValue(Result.error(e.getLocalizedMessage()));
+						onDatabaseUpdate.postValue(Result.error(e.getLocalizedMessage()));
+						checkOfflineData();
 					}
 				});
 	}
 
-	private void populateDataBase(Map<String, ConversionResponse.TargetCurrency> rates) {
-		List<Currency> currencies = new ArrayList<>(rates.size());
-		for (Map.Entry<String, ConversionResponse.TargetCurrency> entry : rates.entrySet())
-			currencies.add(new Currency(
-					entry.getKey(),
-					entry.getValue().getCurrencyName(),
-					entry.getValue().getRate(),
-					System.currentTimeMillis()
-			));
+	private void populateDataBase(List<Currency> currencies) {
 		disposables.add(insertCurrencies(currencies)
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(() -> onDatabasePopulation.setValue(Result.success(getCurrenciesNamesList(currencies)))));
+				.subscribe(() -> {
+							onDatabaseUpdate.setValue(Result.success());
+							spinnersList.setValue(getCurrenciesNamesList(currencies));
+						}
+				));
 	}
 
 
-	public void checkSavedData() {
-		onSavedDataChecked.setValue(Result.loading());
+	private void checkOfflineData() {
+		onOfflineDataChecked.setValue(Result.loading());
 		getAllCurrencies()
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
@@ -98,14 +109,16 @@ public class MainViewModel extends ViewModel {
 					@Override
 					public void onSuccess(List<Currency> currencies) {
 						if (currencies.isEmpty())
-							onSavedDataChecked.setValue(Result.error("empty list")); // TODO: USE CONSTANT OR StringRes
-						else
-							onSavedDataChecked.setValue(Result.success(getCurrenciesNamesList(currencies)));
+							onOfflineDataChecked.setValue(Result.error("empty list")); // TODO: USE CONSTANT OR StringRes
+						else {
+							onOfflineDataChecked.setValue(Result.success());
+							spinnersList.setValue(getCurrenciesNamesList(currencies));
+						}
 					}
 
 					@Override
 					public void onError(Throwable e) {
-						onSavedDataChecked.setValue(Result.error(e.getLocalizedMessage()));
+						onOfflineDataChecked.setValue(Result.error(e.getLocalizedMessage()));
 					}
 				});
 	}
@@ -118,6 +131,48 @@ public class MainViewModel extends ViewModel {
 			names.add(currency.getCode() + " - " + currency.getName());
 		}
 		return names;
+	}
+
+	public void convert(String fromCode, String toCode, double amount) {
+		Single<ConversionResponse.TargetCurrency> singleUsdRateOfFrom =
+				repository.getRate(USD, fromCode).map(conversionResponse -> conversionResponse.getRates().get(fromCode));
+		Single<ConversionResponse.TargetCurrency> singleUsdRateOfTo =
+				repository.getRate(USD, toCode).map(conversionResponse -> conversionResponse.getRates().get(toCode));
+
+		Single.zip(
+				singleUsdRateOfFrom,
+				singleUsdRateOfTo,
+				(targetCurrencyFrom, targetCurrencyTo) -> {
+					Currency currency1 =
+							new Currency(fromCode, targetCurrencyFrom.getCurrencyName(), targetCurrencyFrom.getRate(), System.currentTimeMillis());
+					Currency currency2 =
+							new Currency(toCode, targetCurrencyTo.getCurrencyName(), targetCurrencyTo.getRate(), System.currentTimeMillis());
+					return Pair.create(currency1, currency2);
+				})
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new SingleObserver<Pair<Currency, Currency>>() {
+					@Override
+					public void onSubscribe(Disposable d) {
+						disposables.add(d);
+					}
+
+					@Override
+					public void onSuccess(Pair<Currency, Currency> pair) {
+//						TODO
+						Log.d(t, "onSuccess: " + pair);
+						Log.d(t, "onSuccess: result = " + pair.second.getUsdRate() / pair.first.getUsdRate() * amount);
+
+						repository.updateCurrency(pair.first);
+						repository.updateCurrency(pair.second);
+					}
+
+					@Override
+					public void onError(Throwable e) {
+//						TODO
+					}
+				});
+
 	}
 
 //	API
@@ -151,12 +206,16 @@ public class MainViewModel extends ViewModel {
 
 // Getters & setters
 
-	public LiveData<Result<List<String>>> getOnDatabasePopulation() {
-		return onDatabasePopulation;
+	public LiveData<Result> getOnDatabaseUpdate() {
+		return onDatabaseUpdate;
 	}
 
-	public LiveData<Result<List<String>>> getOnSavedDataChecked() {
-		return onSavedDataChecked;
+	public LiveData<Result> getOnOfflineDataChecked() {
+		return onOfflineDataChecked;
+	}
+
+	public LiveData<List<String>> getSpinnersList() {
+		return spinnersList;
 	}
 
 	@Override

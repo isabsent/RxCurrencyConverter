@@ -8,4 +8,6 @@
 	<string name="exchange_rate">Exchange rate:</string>
 	<string name="last_updated">Last updated:</string>
 	<string name="warning_message">Warning! Connection failed. Information might be outdated.</string>
+	<string name="error_message">Error! Connection failed. No stored data found.</string>
+	<string name="onePointZero">1.0</string>
 </resources>

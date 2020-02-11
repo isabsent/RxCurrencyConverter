@@ -14,6 +14,12 @@ public interface ApiService {
 	);
 
 	@GET("convert")
+	Single<ConversionResponse> getRate(
+			@Query("from") String from,
+			@Query("to") String to
+	);
+
+	@GET("convert")
 	Single<ConversionResponse> getRatesOf(
 			@Query("from") String from
 	);

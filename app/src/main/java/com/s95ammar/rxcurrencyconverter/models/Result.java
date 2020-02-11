@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 public class Result<T> {
 
 	@NonNull
-	public final AuthStatus status;
+	public final Status status;
 
 	@Nullable
 	public final T data;
@@ -17,37 +17,36 @@ public class Result<T> {
 	public final String message;
 
 
-	private Result(@NonNull AuthStatus status, @Nullable T data, @Nullable String message) {
+	private Result(@NonNull Status status, @Nullable T data, @Nullable String message) {
 		this.status = status;
 		this.data = data;
 		this.message = message;
 	}
 
 	public static <T> Result<T> success() {
-		return new Result<>(AuthStatus.SUCCESS, null, null);
+		return new Result<>(Status.SUCCESS, null, null);
 	}
 
 	public static <T> Result<T> success(@Nullable T data) {
-		return new Result<>(AuthStatus.SUCCESS, data, null);
+		return new Result<>(Status.SUCCESS, data, null);
 	}
 
 	public static <T> Result<T> error(String msg, @Nullable T data) {
-		return new Result<>(AuthStatus.ERROR, data, msg);
+		return new Result<>(Status.ERROR, data, msg);
 	}
 
 	public static <T> Result<T> error(String msg) {
-		return new Result<>(AuthStatus.ERROR, null, msg);
+		return new Result<>(Status.ERROR, null, msg);
 	}
 
 	public static <T> Result<T> loading() {
-		return new Result<>(AuthStatus.LOADING, null, null);
+		return new Result<>(Status.LOADING, null, null);
 	}
 
 	public static <T> Result<T> loading(@Nullable T data) {
-		return new Result<>(AuthStatus.LOADING, data, null);
+		return new Result<>(Status.LOADING, data, null);
 	}
 
-
-	public enum AuthStatus {SUCCESS, ERROR, LOADING}
+	public enum Status {SUCCESS, ERROR, LOADING}
 
 }
