@@ -1,8 +1,13 @@
 package com.s95ammar.rxcurrencyconverter.models.retrofit;
 
 import com.google.gson.annotations.SerializedName;
+import com.s95ammar.rxcurrencyconverter.models.data.Currency;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import static com.s95ammar.rxcurrencyconverter.util.Constants.USD;
 
 public class ConversionResponse {
 
@@ -69,13 +74,33 @@ public class ConversionResponse {
 		this.updatedDate = updatedDate;
 	}
 
+	public List<Currency> toCurrenciesListByUsd() {
+		if (!baseCurrencyCode.equals(USD)) return new ArrayList<>();
+
+		List<Currency> currencies = new ArrayList<>(getRates().size());
+		for (Map.Entry<String, ConversionResponse.TargetCurrency> entry : getRates().entrySet())
+			currencies.add(new Currency(
+					entry.getKey(),
+					entry.getValue().getCurrencyName(),
+					entry.getValue().getRate(),
+					System.currentTimeMillis()
+			));
+		return currencies;
+	}
+
+	public Currency toSingleCurrencyByUsd() {
+		List<Currency> currenciesList = toCurrenciesListByUsd();
+		if (currenciesList.size() != 1) return null;
+		return currenciesList.get(0);
+	}
+
 	@Override
 	public String toString() {
 		return "ConversionResponse{" +
 				"amount=" + amount +
 				", baseCurrencyCode='" + baseCurrencyCode + '\'' +
 				", baseCurrencyName='" + baseCurrencyName + '\'' +
-				", rates=" + rates +
+				", rates= map (" + (rates.size() > 1 ? rates.size() : rates) + ")" +
 				", status='" + status + '\'' +
 				", updatedDate='" + updatedDate + '\'' +
 				'}';

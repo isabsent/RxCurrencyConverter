@@ -12,5 +12,6 @@ public class Constants {
 	public static final String USD = "USD";
 	public static final String BLANK = "";
 	public static final int CURRENCY_CODE_LENGTH = 3;
+	public static final double SINGLE_UNIT = 1.0;
 
 }
