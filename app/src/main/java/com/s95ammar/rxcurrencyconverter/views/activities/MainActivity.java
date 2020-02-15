@@ -1,6 +1,7 @@
 package com.s95ammar.rxcurrencyconverter.views.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -33,6 +35,8 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.CURRENCY_CODE_LENGTH;
+import static com.s95ammar.rxcurrencyconverter.util.Constants.KEY_SPINNER_FROM_POSITION;
+import static com.s95ammar.rxcurrencyconverter.util.Constants.KEY_SPINNER_TO_POSITION;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.SINGLE_UNIT;
 
 public class MainActivity extends DaggerAppCompatActivity {
@@ -71,11 +75,13 @@ public class MainActivity extends DaggerAppCompatActivity {
 		setContentView(R.layout.activity_main);
 		viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
 		ButterKnife.bind(this);
-//		TODO: handle configuration changes
 		disposables.add(viewModel.getUsdRatesToAll()
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(this::handleRatesResult));
+				.subscribe(result -> {
+					handleRatesResult(result);
+					resetSpinnersSelection(savedInstanceState);
+				}));
 	}
 
 	private void handleRatesResult(Result<List<Currency>> result) {
@@ -99,12 +105,15 @@ public class MainActivity extends DaggerAppCompatActivity {
 		}
 	}
 
-	private void setLoading(boolean isLoading) {
-		if (isLoading) {
-			progressBar.setVisibility(View.VISIBLE);
-		} else {
-			progressBar.setVisibility(View.GONE);
+	private void resetSpinnersSelection(Bundle savedInstanceState) {
+		if (savedInstanceState != null) {
+			spinnerFrom.setSelection(savedInstanceState.getInt(KEY_SPINNER_FROM_POSITION));
+			spinnerTo.setSelection(savedInstanceState.getInt(KEY_SPINNER_TO_POSITION));
 		}
+	}
+
+	private void setLoading(boolean isLoading) {
+		progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
 		editTextAmount.setEnabled(!isLoading);
 		spinnerFrom.setEnabled(!isLoading);
 		spinnerTo.setEnabled(!isLoading);
@@ -112,10 +121,8 @@ public class MainActivity extends DaggerAppCompatActivity {
 	}
 
 	private void setUpSpinners(List<String> spinnerRows) {
-		if (!spinnerRows.isEmpty()) {
-			spinnerFrom.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
-			spinnerTo.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
-		}
+		spinnerFrom.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
+		spinnerTo.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
 	}
 
 	@OnItemSelected({R.id.spinner_from, R.id.spinner_to})
@@ -123,6 +130,10 @@ public class MainActivity extends DaggerAppCompatActivity {
 		String selection = (String) parent.getSelectedItem();
 		if (view != null && !selection.equals(BLANK))
 			((TextView) view.findViewById(R.id.textView_spinner)).setText(selection.substring(0, CURRENCY_CODE_LENGTH));
+	}
+
+	private void hideWarningOrError() {
+		tvWarningError.setVisibility(View.GONE);
 	}
 
 	private void showOutOfDateWarning() {
@@ -161,6 +172,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 			case SUCCESS:
 				setLoading(false);
 				displayConversionResult(conversionResult.data);
+				hideWarningOrError();
 				break;
 			case WARNING:
 				setLoading(false);
@@ -181,6 +193,13 @@ public class MainActivity extends DaggerAppCompatActivity {
 		textViewExRateValue.setVisibility(View.VISIBLE);
 		textViewResultValue.setText(conversion.getConversionResultDescription());
 		textViewExRateValue.setText(conversion.getExchangeRateDescription());
+	}
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt(KEY_SPINNER_FROM_POSITION, spinnerFrom.getSelectedItemPosition());
+		outState.putInt(KEY_SPINNER_TO_POSITION, spinnerTo.getSelectedItemPosition());
 	}
 
 	@Override
