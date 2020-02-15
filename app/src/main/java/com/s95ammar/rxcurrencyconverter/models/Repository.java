@@ -16,7 +16,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-import static com.s95ammar.rxcurrencyconverter.util.Constants.USD;
+import static com.s95ammar.rxcurrencyconverter.util.Util.USD;
 
 @Singleton
 public class Repository {
@@ -49,7 +49,7 @@ public class Repository {
 		});
 	}
 
-//	Any conversion uses USD rate as a mediator for more efficient data storing (x/y = (USD/y) / (USD/x)).
+	//	Any conversion uses USD rate as a mediator for more efficient data storing (x/y = (USD/y) / (USD/x)).
 	public Observable<Result<Conversion>> getRate(String from, String to, double amount) {
 		return Observable.zip(
 				getUsdRateTo(from),
@@ -74,24 +74,23 @@ public class Repository {
 	}
 
 	private Observable<Result<Currency>> getUsdRateTo(String code) {
-		return Observable.create(emitter ->
-				new NetworkBoundResource<Currency, ConversionResponse>(emitter) {
+		return Observable.create(emitter -> new NetworkBoundResource<Currency, ConversionResponse>(emitter) {
 
-					@Override
-					protected Single<ConversionResponse> createCall() {
-						return api.getRate(USD, code);
-					}
+			@Override
+			protected Single<ConversionResponse> createCall() {
+				return api.getRate(USD, code);
+			}
 
-					@Override
-					protected Completable saveCallResult(ConversionResponse response) {
-						return dao.insertCurrency(response.toSingleCurrencyByUsd());
-					}
+			@Override
+			protected Completable saveCallResult(ConversionResponse response) {
+				return dao.insertCurrency(response.toSingleCurrencyByUsd());
+			}
 
-					@Override
-					protected Single<Currency> loadFromDb() {
-						return dao.getCurrencyByCode(code);
-					}
-				});
+			@Override
+			protected Single<Currency> loadFromDb() {
+				return dao.getCurrencyByCode(code);
+			}
+		});
 	}
 
 }

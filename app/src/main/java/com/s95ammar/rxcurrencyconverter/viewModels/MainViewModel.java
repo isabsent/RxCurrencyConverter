@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
-import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
+import static com.s95ammar.rxcurrencyconverter.util.Util.BLANK;
 
 public class MainViewModel extends ViewModel {
 

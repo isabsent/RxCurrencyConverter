@@ -12,9 +12,9 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.s95ammar.rxcurrencyconverter.util.Constants.BASE_URL;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.HEADER_HOST;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.HEADER_KEY;
+import static com.s95ammar.rxcurrencyconverter.util.Util.BASE_URL;
+import static com.s95ammar.rxcurrencyconverter.util.Util.HEADER_HOST;
+import static com.s95ammar.rxcurrencyconverter.util.Util.HEADER_KEY;
 
 @Module
 public abstract class RetrofitModule {

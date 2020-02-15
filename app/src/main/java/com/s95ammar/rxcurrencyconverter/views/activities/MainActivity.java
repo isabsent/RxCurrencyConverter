@@ -1,10 +1,10 @@
 package com.s95ammar.rxcurrencyconverter.views.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -33,14 +33,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.CURRENCY_CODE_LENGTH;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.KEY_SPINNER_FROM_POSITION;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.KEY_SPINNER_TO_POSITION;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.SINGLE_UNIT;
+import static com.s95ammar.rxcurrencyconverter.util.Util.BLANK;
+import static com.s95ammar.rxcurrencyconverter.util.Util.CURRENCY_CODE_LENGTH;
+import static com.s95ammar.rxcurrencyconverter.util.Util.KEY_SPINNER_FROM_POSITION;
+import static com.s95ammar.rxcurrencyconverter.util.Util.KEY_SPINNER_TO_POSITION;
+import static com.s95ammar.rxcurrencyconverter.util.Util.SINGLE_UNIT;
 
 public class MainActivity extends DaggerAppCompatActivity {
-
+	private final String t = "log_" + getClass().getSimpleName();
+	
 	private CompositeDisposable disposables = new CompositeDisposable();
 
 	@Inject ViewModelProvider.Factory factory;
@@ -54,6 +55,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 	@BindView(R.id.textView_result_value) TextView textViewResultValue;
 	@BindView(R.id.textView_exchange_rate) TextView textViewExRate;
 	@BindView(R.id.textView_exchange_rate_value) TextView textViewExRateValue;
+	@BindView(R.id.button_convert) Button buttonConvert;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 		editTextAmount.setEnabled(!isLoading);
 		spinnerFrom.setEnabled(!isLoading);
 		spinnerTo.setEnabled(!isLoading);
-
+		buttonConvert.setEnabled(!isLoading);
 	}
 
 	private void setUpSpinners(List<String> spinnerRows) {

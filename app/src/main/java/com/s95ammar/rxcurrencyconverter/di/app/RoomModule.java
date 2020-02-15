@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.s95ammar.rxcurrencyconverter.util.Constants.DATABASE_NAME;
+import static com.s95ammar.rxcurrencyconverter.util.Util.DATABASE_NAME;
 
 @Module
 public abstract class RoomModule {

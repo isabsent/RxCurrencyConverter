@@ -2,7 +2,7 @@ package com.s95ammar.rxcurrencyconverter.models.data;
 
 import java.text.DecimalFormat;
 
-import static com.s95ammar.rxcurrencyconverter.util.Constants.SINGLE_UNIT;
+import static com.s95ammar.rxcurrencyconverter.util.Util.SINGLE_UNIT;
 
 public class Conversion {
 	private String fromCode;

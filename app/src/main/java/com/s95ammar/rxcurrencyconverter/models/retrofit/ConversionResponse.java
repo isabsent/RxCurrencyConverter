@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.s95ammar.rxcurrencyconverter.util.Constants.USD;
+import static com.s95ammar.rxcurrencyconverter.util.Util.USD;
 
 public class ConversionResponse {
 
@@ -21,12 +21,10 @@ public class ConversionResponse {
 
 	private Map<String, TargetCurrency> rates;
 
-	private String status;
-
 	@SerializedName("updated_date")
 	private String updatedDate;
 
-	public Map<String, TargetCurrency> getRates() {
+	private Map<String, TargetCurrency> getRates() {
 		return rates;
 	}
 
