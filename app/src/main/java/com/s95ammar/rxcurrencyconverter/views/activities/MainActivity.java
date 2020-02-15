@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -33,6 +34,7 @@ import butterknife.OnItemSelected;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.s95ammar.rxcurrencyconverter.util.Util.BLANK;
@@ -43,7 +45,6 @@ import static com.s95ammar.rxcurrencyconverter.util.Util.SINGLE_UNIT;
 import static com.s95ammar.rxcurrencyconverter.util.Util.isWithinLast10Sec;
 
 public class MainActivity extends DaggerAppCompatActivity {
-	private final String t = "log_" + getClass().getSimpleName();
 
 	private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -61,6 +62,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 	@BindView(R.id.textView_last_updated) TextView textViewLastUpdated;
 	@BindView(R.id.textView_last_updated_value) TextView textViewLastUpdatedValue;
 	@BindView(R.id.button_convert) Button buttonConvert;
+	@BindView(R.id.button_retry) Button buttonRetry;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,27 +70,40 @@ public class MainActivity extends DaggerAppCompatActivity {
 		setContentView(R.layout.activity_main);
 		viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
 		ButterKnife.bind(this);
+		fetchDataThen(() -> resetSpinnersSelection(savedInstanceState));
+	}
+
+	private void fetchDataThen(@Nullable Action onComplete) {
 		disposables.add(viewModel.getUsdRatesToAll()
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(result -> {
 					handleRatesResult(result);
-					resetSpinnersSelection(savedInstanceState);
+					if (onComplete != null) onComplete.run();
 				}));
 	}
 
 	private void handleRatesResult(Result<List<Currency>> result) {
+		displayResultStatus(result.status);
 		switch (result.status) {
+			case SUCCESS:
+			case WARNING:
+				setUpSpinners(viewModel.getCurrenciesNamesList(result.data));
+				break;
+		}
+	}
+
+	private void displayResultStatus(Result.Status status) {
+		switch (status) {
 			case LOADING:
 				setLoading(true);
 				break;
 			case SUCCESS:
 				setLoading(false);
-				setUpSpinners(viewModel.getCurrenciesNamesList(result.data));
+				hideWarningOrError();
 				break;
 			case WARNING:
 				setLoading(false);
-				setUpSpinners(viewModel.getCurrenciesNamesList(result.data));
 				showOutOfDateWarning();
 				break;
 			case ERROR:
@@ -127,6 +142,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 
 	private void hideWarningOrError() {
 		textViewWarningError.setVisibility(View.GONE);
+		buttonRetry.setVisibility(View.GONE);
 	}
 
 	private void showOutOfDateWarning() {
@@ -139,12 +155,13 @@ public class MainActivity extends DaggerAppCompatActivity {
 		textViewWarningError.setVisibility(View.VISIBLE);
 		textViewWarningError.setTextColor(ContextCompat.getColor(this, R.color.colorError));
 		textViewWarningError.setText(R.string.error_message);
+		buttonRetry.setVisibility(View.VISIBLE);
 	}
 
 	@OnClick(R.id.button_convert)
 	void convert() {
-		String from = ((TextView) spinnerFrom.getSelectedView().findViewById(R.id.textView_spinner)).getText().toString();
-		String to = ((TextView) spinnerTo.getSelectedView().findViewById(R.id.textView_spinner)).getText().toString();
+		String from = getSpinnerSelection(spinnerFrom);
+		String to = getSpinnerSelection(spinnerTo);
 		String input = editTextAmount.getText().toString();
 		double amount = (input.isEmpty() ? SINGLE_UNIT : Double.valueOf(input));
 
@@ -157,24 +174,23 @@ public class MainActivity extends DaggerAppCompatActivity {
 		}
 	}
 
-	private void handleConversionResult(Result<Conversion> conversionResult) {
-		switch (conversionResult.status) {
-			case LOADING:
-				setLoading(true);
-				break;
+	@OnClick(R.id.button_retry)
+	void reconnect() {
+		fetchDataThen(null);
+	}
+
+	private String getSpinnerSelection(Spinner spinner) {
+		if (spinner.getSelectedView() != null)
+			return ((TextView) spinner.getSelectedView().findViewById(R.id.textView_spinner)).getText().toString();
+		return BLANK;
+	}
+
+	private void handleConversionResult(Result<Conversion> result) {
+		displayResultStatus(result.status);
+		switch (result.status) {
 			case SUCCESS:
-				setLoading(false);
-				displayConversionResult(conversionResult.data);
-				hideWarningOrError();
-				break;
 			case WARNING:
-				setLoading(false);
-				displayConversionResult(conversionResult.data);
-				showOutOfDateWarning();
-				break;
-			case ERROR:
-				setLoading(false);
-				showDataMissingError();
+				displayConversionResult(result.data);
 				break;
 		}
 	}

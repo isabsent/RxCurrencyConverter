@@ -11,4 +11,5 @@
 	<string name="error_message">Error! Connection failed. No offline data found.</string>
 	<string name="singleUnit">1.0</string>
 	<string name="justNow">Just now</string>
+	<string name="retry">Retry</string>
 </resources>
