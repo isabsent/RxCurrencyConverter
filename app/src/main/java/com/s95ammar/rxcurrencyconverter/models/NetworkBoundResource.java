@@ -51,7 +51,7 @@ abstract class NetworkBoundResource<LocalType, RemoteType> {
 		disposables.add(
 				saveCallResult(response)
 						.subscribeOn(Schedulers.io())
-						.observeOn(Schedulers.io())
+						.observeOn(AndroidSchedulers.mainThread())
 						.subscribe(() -> disposables.add(
 								loadFromDb()
 										.subscribeOn(Schedulers.io())

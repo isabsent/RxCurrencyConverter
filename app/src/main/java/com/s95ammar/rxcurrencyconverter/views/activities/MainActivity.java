@@ -20,6 +20,8 @@ import com.s95ammar.rxcurrencyconverter.models.data.Conversion;
 import com.s95ammar.rxcurrencyconverter.models.data.Currency;
 import com.s95ammar.rxcurrencyconverter.viewModels.MainViewModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,10 +40,11 @@ import static com.s95ammar.rxcurrencyconverter.util.Util.CURRENCY_CODE_LENGTH;
 import static com.s95ammar.rxcurrencyconverter.util.Util.KEY_SPINNER_FROM_POSITION;
 import static com.s95ammar.rxcurrencyconverter.util.Util.KEY_SPINNER_TO_POSITION;
 import static com.s95ammar.rxcurrencyconverter.util.Util.SINGLE_UNIT;
+import static com.s95ammar.rxcurrencyconverter.util.Util.isWithinLast10Sec;
 
 public class MainActivity extends DaggerAppCompatActivity {
 	private final String t = "log_" + getClass().getSimpleName();
-	
+
 	private CompositeDisposable disposables = new CompositeDisposable();
 
 	@Inject ViewModelProvider.Factory factory;
@@ -50,11 +53,13 @@ public class MainActivity extends DaggerAppCompatActivity {
 	@BindView(R.id.spinner_to) Spinner spinnerTo;
 	@BindView(R.id.editText_amount) EditText editTextAmount;
 	@BindView(R.id.progressBar) ProgressBar progressBar;
-	@BindView(R.id.textView_warning_error) TextView tvWarningError;
+	@BindView(R.id.textView_warning_error) TextView textViewWarningError;
 	@BindView(R.id.textView_result) TextView textViewResult;
 	@BindView(R.id.textView_result_value) TextView textViewResultValue;
 	@BindView(R.id.textView_exchange_rate) TextView textViewExRate;
 	@BindView(R.id.textView_exchange_rate_value) TextView textViewExRateValue;
+	@BindView(R.id.textView_last_updated) TextView textViewLastUpdated;
+	@BindView(R.id.textView_last_updated_value) TextView textViewLastUpdatedValue;
 	@BindView(R.id.button_convert) Button buttonConvert;
 
 	@Override
@@ -121,19 +126,19 @@ public class MainActivity extends DaggerAppCompatActivity {
 	}
 
 	private void hideWarningOrError() {
-		tvWarningError.setVisibility(View.GONE);
+		textViewWarningError.setVisibility(View.GONE);
 	}
 
 	private void showOutOfDateWarning() {
-		tvWarningError.setVisibility(View.VISIBLE);
-		tvWarningError.setTextColor(ContextCompat.getColor(this, R.color.colorWarning));
-		tvWarningError.setText(R.string.warning_message);
+		textViewWarningError.setVisibility(View.VISIBLE);
+		textViewWarningError.setTextColor(ContextCompat.getColor(this, R.color.colorWarning));
+		textViewWarningError.setText(R.string.warning_message);
 	}
 
 	private void showDataMissingError() {
-		tvWarningError.setVisibility(View.VISIBLE);
-		tvWarningError.setTextColor(ContextCompat.getColor(this, R.color.colorError));
-		tvWarningError.setText(R.string.error_message);
+		textViewWarningError.setVisibility(View.VISIBLE);
+		textViewWarningError.setTextColor(ContextCompat.getColor(this, R.color.colorError));
+		textViewWarningError.setText(R.string.error_message);
 	}
 
 	@OnClick(R.id.button_convert)
@@ -179,8 +184,14 @@ public class MainActivity extends DaggerAppCompatActivity {
 		textViewResultValue.setVisibility(conversion.getAmount() == SINGLE_UNIT ? View.GONE : View.VISIBLE);
 		textViewExRate.setVisibility(View.VISIBLE);
 		textViewExRateValue.setVisibility(View.VISIBLE);
+		textViewLastUpdated.setVisibility(View.VISIBLE);
+		textViewLastUpdatedValue.setVisibility(View.VISIBLE);
 		textViewResultValue.setText(conversion.getConversionResultDescription());
 		textViewExRateValue.setText(conversion.getExchangeRateDescription());
+		if (isWithinLast10Sec(conversion.getConversionTimeInMillis()))
+			textViewLastUpdatedValue.setText(R.string.justNow);
+		else
+			textViewLastUpdatedValue.setText(SimpleDateFormat.getDateTimeInstance().format(new Date(conversion.getConversionTimeInMillis())));
 	}
 
 	@Override

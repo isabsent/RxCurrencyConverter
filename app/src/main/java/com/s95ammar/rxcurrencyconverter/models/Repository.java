@@ -59,11 +59,12 @@ public class Repository {
 						return Result.loading();
 					} else if (resultOrigin.status == Result.Status.SUCCESS && resultDestination.status == Result.Status.SUCCESS) {
 						return Result.success(
-								new Conversion(from, to, amount, resultDestination.data.getUsdRate() / resultOrigin.data.getUsdRate())
+								new Conversion(resultOrigin.data, resultDestination.data, amount, System.currentTimeMillis())
 						);
 					} else if (resultOrigin.status == Result.Status.WARNING || resultDestination.status == Result.Status.WARNING) {
 						return Result.warning(
-								new Conversion(from, to, amount, resultDestination.data.getUsdRate() / resultOrigin.data.getUsdRate()),
+								new Conversion(resultOrigin.data, resultDestination.data, amount,
+										Math.min(resultOrigin.data.getLastUpdated(), resultDestination.data.getLastUpdated())),
 								resultOrigin.message
 						);
 					} else {

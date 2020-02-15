@@ -1,8 +1,7 @@
 package com.s95ammar.rxcurrencyconverter.models.data;
 
-import java.text.DecimalFormat;
-
 import static com.s95ammar.rxcurrencyconverter.util.Util.SINGLE_UNIT;
+import static com.s95ammar.rxcurrencyconverter.util.Util.formatToFourDecimals;
 
 public class Conversion {
 	private String fromCode;
@@ -13,14 +12,12 @@ public class Conversion {
 	private double exchangeRate;
 	private long conversionTimeInMillis;
 
-	private static final DecimalFormat FOUR_DECIMAL_PLACES = new DecimalFormat("#.####");
-
-	public Conversion(String fromCode, String toCode, double amount, double exchangeRate) {
-		this.fromCode = fromCode;
-		this.toCode = toCode;
+	public Conversion(Currency currencyFrom, Currency currencyTo, double amount, long conversionTimeInMillis) {
+		fromCode = currencyFrom.getCode();
+		toCode = currencyTo.getCode();
 		this.amount = amount;
-		this.exchangeRate = exchangeRate;
-		conversionTimeInMillis = System.currentTimeMillis();
+		exchangeRate = currencyTo.getUsdRate() / currencyFrom.getUsdRate();
+		this.conversionTimeInMillis = conversionTimeInMillis;
 	}
 
 	public double getAmount() {
@@ -31,12 +28,16 @@ public class Conversion {
 		return amount * exchangeRate;
 	}
 
+	public long getConversionTimeInMillis() {
+		return conversionTimeInMillis;
+	}
+
 	public String getConversionResultDescription() {
-		return amount + " " + fromCode + " = " + FOUR_DECIMAL_PLACES.format(getConversionResult()) + " " + toCode;
+		return amount + " " + fromCode + " = " + formatToFourDecimals(getConversionResult()) + " " + toCode;
 	}
 
 	public String getExchangeRateDescription() {
-		return SINGLE_UNIT + " " + fromCode + " = " + FOUR_DECIMAL_PLACES.format(exchangeRate) + " " + toCode;
+		return SINGLE_UNIT + " " + fromCode + " = " + formatToFourDecimals(exchangeRate) + " " + toCode;
 	}
 
 }

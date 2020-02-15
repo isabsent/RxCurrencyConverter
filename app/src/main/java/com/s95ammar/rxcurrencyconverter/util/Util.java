@@ -1,8 +1,8 @@
 package com.s95ammar.rxcurrencyconverter.util;
 
+import java.text.DecimalFormat;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
-import java.util.List;
 
 public class Util {
 	public static final String BASE_URL = "https://currency-converter5.p.rapidapi.com/currency/";
@@ -23,4 +23,11 @@ public class Util {
 		return obj instanceof Collection && ((Collection) obj).isEmpty();
 	}
 
+	public static boolean isWithinLast10Sec(long timeInMillis) {
+		return System.currentTimeMillis() <= timeInMillis + 10_000;
+	}
+
+	public static String formatToFourDecimals(double number) {
+		return new DecimalFormat("#.####").format(number);
+	}
 }

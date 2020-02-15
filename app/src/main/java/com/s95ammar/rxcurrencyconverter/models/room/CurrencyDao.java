@@ -4,7 +4,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import com.s95ammar.rxcurrencyconverter.models.data.Currency;
 
@@ -21,9 +20,6 @@ public interface CurrencyDao {
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	Completable insertCurrencies(List<Currency> currencies);
-
-	@Update
-	Completable updateCurrency(Currency currency);
 
 	@Query("SELECT * FROM currencies WHERE code = :code")
 	Single<Currency> getCurrencyByCode(String code);

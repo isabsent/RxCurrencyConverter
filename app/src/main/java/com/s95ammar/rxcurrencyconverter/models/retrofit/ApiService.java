@@ -7,13 +7,6 @@ import retrofit2.http.Query;
 public interface ApiService {
 
 	@GET("convert")
-	Single<ConversionResponse> convert(
-			@Query("from") String from,
-			@Query("to") String to,
-			@Query("amount") int amount
-	);
-
-	@GET("convert")
 	Single<ConversionResponse> getRate(
 			@Query("from") String from,
 			@Query("to") String to
@@ -23,6 +16,5 @@ public interface ApiService {
 	Single<ConversionResponse> getRatesToAll(
 			@Query("from") String from
 	);
-
 
 }
