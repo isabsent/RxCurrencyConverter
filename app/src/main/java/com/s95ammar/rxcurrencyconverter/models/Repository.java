@@ -31,11 +31,11 @@ public class Repository {
 		this.api = api;
 	}
 
-	public Observable<Result<List<Currency>>> getRatesOfUsd() {
+	public Observable<Result<List<Currency>>> getUsdRatesToAll() {
 		return Observable.create(emitter -> new NetworkBoundResource<List<Currency>, ConversionResponse>(emitter) {
 			@Override
 			protected Single<ConversionResponse> createCall() {
-				return api.getRatesOf(USD);
+				return api.getRatesToAll(USD);
 			}
 
 			@Override
@@ -53,8 +53,8 @@ public class Repository {
 	public Observable<Result<Conversion>> getRate(String from, String to, double amount) {
 
 		return Observable.zip(
-				getUsdRateFor(from),
-				getUsdRateFor(to),
+				getUsdRateTo(from),
+				getUsdRateTo(to),
 				(resultOrigin, resultDestination) -> {
 					if (resultOrigin.status == Result.Status.LOADING || resultDestination.status == Result.Status.LOADING) {
 						return Result.loading();
@@ -67,7 +67,6 @@ public class Repository {
 								new Conversion(from, to, amount, resultDestination.data.getUsdRate() / resultOrigin.data.getUsdRate()),
 								resultOrigin.message
 						);
-
 					} else {
 						return Result.error(resultDestination.message);
 					}
@@ -75,13 +74,13 @@ public class Repository {
 		);
 	}
 
-	private Observable<Result<Currency>> getUsdRateFor(String from) {
+	private Observable<Result<Currency>> getUsdRateTo(String code) {
 		return Observable.create(emitter ->
 				new NetworkBoundResource<Currency, ConversionResponse>(emitter) {
 
 					@Override
 					protected Single<ConversionResponse> createCall() {
-						return api.getRate(USD, from);
+						return api.getRate(USD, code);
 					}
 
 					@Override
@@ -91,29 +90,9 @@ public class Repository {
 
 					@Override
 					protected Single<Currency> loadFromDb() {
-						return dao.getCurrencyByCode(from);
+						return dao.getCurrencyByCode(code);
 					}
 				});
-	}
-
-	public Completable insertCurrency(Currency currency) {
-		return dao.insertCurrency(currency);
-	}
-
-	public Completable insertCurrencies(List<Currency> currencies) {
-		return dao.insertCurrencies(currencies);
-	}
-
-	public Completable updateCurrency(Currency currency) {
-		return dao.updateCurrency(currency);
-	}
-
-	public Single<Currency> getCurrencyByCode(String code) {
-		return dao.getCurrencyByCode(code);
-	}
-
-	public Single<List<Currency>> getAllCurrencies() {
-		return dao.getAllCurrencies();
 	}
 
 }

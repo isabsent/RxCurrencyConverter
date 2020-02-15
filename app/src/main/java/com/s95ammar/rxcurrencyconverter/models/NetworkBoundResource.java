@@ -1,31 +1,20 @@
 package com.s95ammar.rxcurrencyconverter.models;
 
-import android.util.Log;
-
 import androidx.annotation.MainThread;
 import androidx.annotation.WorkerThread;
-import androidx.lifecycle.LiveData;
-
 
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 abstract class NetworkBoundResource<LocalType, RemoteType> {
-	private final String t = "log_NBR";
 
 //	TODO: handle disposables
 	public NetworkBoundResource(ObservableEmitter<Result<LocalType>> emitter) {

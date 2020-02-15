@@ -1,8 +1,6 @@
 package com.s95ammar.rxcurrencyconverter.views.activities;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,7 +9,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -36,8 +33,6 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.CURRENCY_CODE_LENGTH;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.KEY_SPINNER_FROM_POSITION;
-import static com.s95ammar.rxcurrencyconverter.util.Constants.KEY_SPINNER_TO_POSITION;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.SINGLE_UNIT;
 
 public class MainActivity extends DaggerAppCompatActivity {
@@ -77,7 +72,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 		viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
 		ButterKnife.bind(this);
 //		TODO: handle configuration changes
-		disposables.add(viewModel.getRatesOfUsd()
+		disposables.add(viewModel.getUsdRatesToAll()
 				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(this::handleRatesResult));

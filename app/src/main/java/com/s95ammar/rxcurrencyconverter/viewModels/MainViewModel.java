@@ -20,7 +20,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
 
 public class MainViewModel extends ViewModel {
-	private final String t = "log_" + getClass().getSimpleName();
 
 	private Repository repository;
 
@@ -31,8 +30,8 @@ public class MainViewModel extends ViewModel {
 		this.repository = repository;
 	}
 
-	public Observable<Result<List<Currency>>> getRatesOfUsd() {
-		return repository.getRatesOfUsd();
+	public Observable<Result<List<Currency>>> getUsdRatesToAll() {
+		return repository.getUsdRatesToAll();
 	}
 
 	public Observable<Result<Conversion>> getRate(String from, String to, double amount) {

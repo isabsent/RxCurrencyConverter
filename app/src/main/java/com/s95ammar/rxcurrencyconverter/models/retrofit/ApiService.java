@@ -20,7 +20,7 @@ public interface ApiService {
 	);
 
 	@GET("convert")
-	Single<ConversionResponse> getRatesOf(
+	Single<ConversionResponse> getRatesToAll(
 			@Query("from") String from
 	);
 
