@@ -20,7 +20,6 @@ import static com.s95ammar.rxcurrencyconverter.util.Constants.USD;
 
 @Singleton
 public class Repository {
-	private final String t = "log_" + getClass().getSimpleName();
 
 	private CurrencyDao dao;
 	private ApiService api;
@@ -50,8 +49,8 @@ public class Repository {
 		});
 	}
 
+//	Any conversion uses USD rate as a mediator for more efficient data storing (x/y = (USD/y) / (USD/x)).
 	public Observable<Result<Conversion>> getRate(String from, String to, double amount) {
-
 		return Observable.zip(
 				getUsdRateTo(from),
 				getUsdRateTo(to),

@@ -2,7 +2,7 @@ package com.s95ammar.rxcurrencyconverter.di.app;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.s95ammar.rxcurrencyconverter.viewModels.helperClasses.ViewModelFactory;
+import com.s95ammar.rxcurrencyconverter.viewModels.ViewModelFactory;
 
 import dagger.Binds;
 import dagger.Module;

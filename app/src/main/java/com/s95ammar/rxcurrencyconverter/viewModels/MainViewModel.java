@@ -15,15 +15,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.CompositeDisposable;
 
 import static com.s95ammar.rxcurrencyconverter.util.Constants.BLANK;
 
 public class MainViewModel extends ViewModel {
 
 	private Repository repository;
-
-	private CompositeDisposable disposables = new CompositeDisposable();
 
 	@Inject
 	public MainViewModel(Repository repository) {
@@ -48,9 +45,4 @@ public class MainViewModel extends ViewModel {
 		return names;
 	}
 
-	@Override
-	protected void onCleared() {
-		super.onCleared();
-		disposables.clear();
-	}
 }

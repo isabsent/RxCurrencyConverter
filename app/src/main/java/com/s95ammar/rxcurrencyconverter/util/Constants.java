@@ -14,4 +14,7 @@ public class Constants {
 	public static final int CURRENCY_CODE_LENGTH = 3;
 	public static final double SINGLE_UNIT = 1.0;
 
+	public static final String KEY_SPINNER_FROM_POSITION = "spinner_from_position";
+	public static final String KEY_SPINNER_TO_POSITION = "spinner_to_position";
+
 }

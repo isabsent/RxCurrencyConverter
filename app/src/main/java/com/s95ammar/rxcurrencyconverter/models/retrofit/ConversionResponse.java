@@ -26,58 +26,15 @@ public class ConversionResponse {
 	@SerializedName("updated_date")
 	private String updatedDate;
 
-	public int getAmount() {
-		return amount;
-	}
-
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
-
-	public String getBaseCurrencyCode() {
-		return baseCurrencyCode;
-	}
-
-	public void setBaseCurrencyCode(String baseCurrencyCode) {
-		this.baseCurrencyCode = baseCurrencyCode;
-	}
-
-	public String getBaseCurrencyName() {
-		return baseCurrencyName;
-	}
-
-	public void setBaseCurrencyName(String baseCurrencyName) {
-		this.baseCurrencyName = baseCurrencyName;
-	}
-
 	public Map<String, TargetCurrency> getRates() {
 		return rates;
 	}
 
-	public void setRates(Map<String, TargetCurrency> rates) {
-		this.rates = rates;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(String updatedDate) {
-		this.updatedDate = updatedDate;
-	}
-
 	public List<Currency> toCurrenciesListByUsd() {
-		if (!baseCurrencyCode.equals(USD)) return new ArrayList<>();
+		if (!baseCurrencyCode.equals(USD))
+			throw new RuntimeException("Response base currency must be " + USD + " for creating Currency objects. Found: " + baseCurrencyCode + ".");
 
-		List<Currency> currencies = new ArrayList<>(getRates().size());
+		List<Currency> currencies = new ArrayList<>(rates.size());
 		for (Map.Entry<String, ConversionResponse.TargetCurrency> entry : getRates().entrySet())
 			currencies.add(new Currency(
 					entry.getKey(),
@@ -89,21 +46,10 @@ public class ConversionResponse {
 	}
 
 	public Currency toSingleCurrencyByUsd() {
+		if (rates.size() != 1)
+			throw new RuntimeException("Response must contain rate for exactly one currency to create a single Currency object. Found: " + rates.size() + " rates.");
 		List<Currency> currenciesList = toCurrenciesListByUsd();
-		if (currenciesList.size() != 1) return null;
 		return currenciesList.get(0);
-	}
-
-	@Override
-	public String toString() {
-		return "ConversionResponse{" +
-				"amount=" + amount +
-				", baseCurrencyCode='" + baseCurrencyCode + '\'' +
-				", baseCurrencyName='" + baseCurrencyName + '\'' +
-				", rates= map (" + (rates.size() > 1 ? rates.size() : rates) + ")" +
-				", status='" + status + '\'' +
-				", updatedDate='" + updatedDate + '\'' +
-				'}';
 	}
 
 	public static class TargetCurrency {
@@ -119,33 +65,9 @@ public class ConversionResponse {
 			return currencyName;
 		}
 
-		public void setCurrencyName(String currencyName) {
-			this.currencyName = currencyName;
-		}
-
 		public double getRate() {
 			return rate;
 		}
 
-		public void setRate(double rate) {
-			this.rate = rate;
-		}
-
-		public double getRateForAmount() {
-			return rateForAmount;
-		}
-
-		public void setRateForAmount(double rateForAmount) {
-			this.rateForAmount = rateForAmount;
-		}
-
-		@Override
-		public String toString() {
-			return "currency{" +
-					"currencyName='" + currencyName + '\'' +
-					", rate=" + rate +
-					", rateForAmount=" + rateForAmount +
-					'}';
-		}
 	}
 }

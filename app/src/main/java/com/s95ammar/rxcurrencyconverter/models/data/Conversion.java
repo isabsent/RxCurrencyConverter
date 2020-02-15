@@ -23,24 +23,8 @@ public class Conversion {
 		conversionTimeInMillis = System.currentTimeMillis();
 	}
 
-	public String getFromCode() {
-		return fromCode;
-	}
-
-	public String getToCode() {
-		return toCode;
-	}
-
 	public double getAmount() {
 		return amount;
-	}
-
-	public double getExchangeRate() {
-		return exchangeRate;
-	}
-
-	public long getConversionTimeInMillis() {
-		return conversionTimeInMillis;
 	}
 
 	public double getConversionResult() {

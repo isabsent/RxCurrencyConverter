@@ -40,34 +40,20 @@ import static com.s95ammar.rxcurrencyconverter.util.Constants.KEY_SPINNER_TO_POS
 import static com.s95ammar.rxcurrencyconverter.util.Constants.SINGLE_UNIT;
 
 public class MainActivity extends DaggerAppCompatActivity {
-	private final String t = "log_" + getClass().getSimpleName();
 
 	private CompositeDisposable disposables = new CompositeDisposable();
 
-	@Inject
-	ViewModelProvider.Factory factory;
-	MainViewModel viewModel;
-
-	@BindView(R.id.spinner_from)
-	Spinner spinnerFrom;
-
-	@BindView(R.id.spinner_to)
-	Spinner spinnerTo;
-
-	@BindView(R.id.editText_amount)
-	EditText editTextAmount;
-
-	@BindView(R.id.progressBar)
-	ProgressBar progressBar;
-
-	@BindView(R.id.textView_warning_error)
-	TextView tvWarningError;
-
-	@BindView(R.id.textView_result_value)
-	TextView textViewResultValue;
-
-	@BindView(R.id.textView_exchange_rate_value)
-	TextView textViewExRateValue;
+	@Inject ViewModelProvider.Factory factory;
+	private MainViewModel viewModel;
+	@BindView(R.id.spinner_from) Spinner spinnerFrom;
+	@BindView(R.id.spinner_to) Spinner spinnerTo;
+	@BindView(R.id.editText_amount) EditText editTextAmount;
+	@BindView(R.id.progressBar) ProgressBar progressBar;
+	@BindView(R.id.textView_warning_error) TextView tvWarningError;
+	@BindView(R.id.textView_result) TextView textViewResult;
+	@BindView(R.id.textView_result_value) TextView textViewResultValue;
+	@BindView(R.id.textView_exchange_rate) TextView textViewExRate;
+	@BindView(R.id.textView_exchange_rate_value) TextView textViewExRateValue;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -187,9 +173,9 @@ public class MainActivity extends DaggerAppCompatActivity {
 	}
 
 	private void displayConversionResult(Conversion conversion) {
-		findViewById(R.id.textView_result).setVisibility(conversion.getAmount() == SINGLE_UNIT ? View.GONE : View.VISIBLE);
+		textViewResult.setVisibility(conversion.getAmount() == SINGLE_UNIT ? View.GONE : View.VISIBLE);
 		textViewResultValue.setVisibility(conversion.getAmount() == SINGLE_UNIT ? View.GONE : View.VISIBLE);
-		findViewById(R.id.textView_exchange_rate).setVisibility(View.VISIBLE);
+		textViewExRate.setVisibility(View.VISIBLE);
 		textViewExRateValue.setVisibility(View.VISIBLE);
 		textViewResultValue.setText(conversion.getConversionResultDescription());
 		textViewExRateValue.setText(conversion.getExchangeRateDescription());
