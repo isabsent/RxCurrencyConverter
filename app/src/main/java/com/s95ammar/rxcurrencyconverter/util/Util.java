@@ -19,6 +19,8 @@ public class Util {
 	public static final String KEY_SPINNER_FROM_POSITION = "spinner_from_position";
 	public static final String KEY_SPINNER_TO_POSITION = "spinner_to_position";
 
+	public static final DecimalFormat FOUR_DECIMALS_FORMAT = new DecimalFormat("#.####");
+
 	public static boolean isAnEmptyCollection(Object obj) {
 		return obj instanceof Collection && ((Collection) obj).isEmpty();
 	}
@@ -27,7 +29,4 @@ public class Util {
 		return System.currentTimeMillis() <= timeInMillis + 10_000;
 	}
 
-	public static String formatToFourDecimals(double number) {
-		return new DecimalFormat("#.####").format(number);
-	}
 }

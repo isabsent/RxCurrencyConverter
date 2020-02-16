@@ -1,13 +1,12 @@
 package com.s95ammar.rxcurrencyconverter.viewModels;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
 import com.s95ammar.rxcurrencyconverter.models.Repository;
 import com.s95ammar.rxcurrencyconverter.models.Result;
 import com.s95ammar.rxcurrencyconverter.models.data.Conversion;
 import com.s95ammar.rxcurrencyconverter.models.data.Currency;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class MainViewModel extends ViewModel {
 		return repository.getRate(from, to, amount);
 	}
 
-	public List<String> getCurrenciesNamesList(@NotNull List<Currency> currencies) {
+	public List<String> getCurrenciesNamesList(@NonNull List<Currency> currencies) {
 		List<String> names = new ArrayList<>(currencies.size());
 		names.add(BLANK);
 		for (int i = 0; i < currencies.size(); i++) {

@@ -16,6 +16,9 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
+import static com.s95ammar.rxcurrencyconverter.models.Result.Status.LOADING;
+import static com.s95ammar.rxcurrencyconverter.models.Result.Status.SUCCESS;
+import static com.s95ammar.rxcurrencyconverter.models.Result.Status.WARNING;
 import static com.s95ammar.rxcurrencyconverter.util.Util.USD;
 
 @Singleton
@@ -54,22 +57,21 @@ public class Repository {
 		return Observable.zip(
 				getUsdRateTo(from),
 				getUsdRateTo(to),
-				(resultOrigin, resultDestination) -> {
-					if (resultOrigin.status == Result.Status.LOADING || resultDestination.status == Result.Status.LOADING) {
+				(resultFrom, resultTo) -> {
+					if (resultFrom.status == LOADING || resultTo.status == LOADING)
 						return Result.loading();
-					} else if (resultOrigin.status == Result.Status.SUCCESS && resultDestination.status == Result.Status.SUCCESS) {
+					if (resultFrom.status == SUCCESS && resultTo.status == SUCCESS)
 						return Result.success(
-								new Conversion(resultOrigin.data, resultDestination.data, amount, System.currentTimeMillis())
+								new Conversion(resultFrom.data, resultTo.data, amount, System.currentTimeMillis())
 						);
-					} else if (resultOrigin.status == Result.Status.WARNING || resultDestination.status == Result.Status.WARNING) {
+					if (resultFrom.status == WARNING || resultTo.status == WARNING)
 						return Result.warning(
-								new Conversion(resultOrigin.data, resultDestination.data, amount,
-										Math.min(resultOrigin.data.getLastUpdated(), resultDestination.data.getLastUpdated())),
-								resultOrigin.message
+								new Conversion(resultFrom.data, resultTo.data, amount,
+										Math.min(resultFrom.data.getLastUpdated(), resultTo.data.getLastUpdated())),
+								resultFrom.message
 						);
-					} else {
-						return Result.error(resultDestination.message);
-					}
+					return Result.error(resultFrom.message);
+
 				}
 		);
 	}
@@ -84,7 +86,7 @@ public class Repository {
 
 			@Override
 			protected Completable saveCallResult(ConversionResponse response) {
-				return dao.insertCurrency(response.toSingleCurrencyByUsd());
+				return dao.updateCurrency(response.toSingleCurrencyByUsd());
 			}
 
 			@Override

@@ -37,6 +37,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.s95ammar.rxcurrencyconverter.models.Result.Status.SUCCESS;
+import static com.s95ammar.rxcurrencyconverter.models.Result.Status.WARNING;
 import static com.s95ammar.rxcurrencyconverter.util.Util.BLANK;
 import static com.s95ammar.rxcurrencyconverter.util.Util.CURRENCY_CODE_LENGTH;
 import static com.s95ammar.rxcurrencyconverter.util.Util.KEY_SPINNER_FROM_POSITION;
@@ -85,18 +87,15 @@ public class MainActivity extends DaggerAppCompatActivity {
 
 	private void handleRatesResult(Result<List<Currency>> result) {
 		displayResultStatus(result.status);
-		switch (result.status) {
-			case SUCCESS:
-			case WARNING:
-				setUpSpinners(viewModel.getCurrenciesNamesList(result.data));
-				break;
-		}
+		if (result.status == SUCCESS || result.status == WARNING)
+			setUpSpinners(viewModel.getCurrenciesNamesList(result.data));
 	}
 
 	private void displayResultStatus(Result.Status status) {
 		switch (status) {
 			case LOADING:
 				setLoading(true);
+				hideWarningOrError();
 				break;
 			case SUCCESS:
 				setLoading(false);
@@ -187,12 +186,8 @@ public class MainActivity extends DaggerAppCompatActivity {
 
 	private void handleConversionResult(Result<Conversion> result) {
 		displayResultStatus(result.status);
-		switch (result.status) {
-			case SUCCESS:
-			case WARNING:
-				displayConversionResult(result.data);
-				break;
-		}
+		if (result.status == SUCCESS || result.status == WARNING)
+			displayConversionResult(result.data);
 	}
 
 	private void displayConversionResult(Conversion conversion) {

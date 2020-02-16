@@ -1,7 +1,7 @@
 package com.s95ammar.rxcurrencyconverter.models.data;
 
+import static com.s95ammar.rxcurrencyconverter.util.Util.FOUR_DECIMALS_FORMAT;
 import static com.s95ammar.rxcurrencyconverter.util.Util.SINGLE_UNIT;
-import static com.s95ammar.rxcurrencyconverter.util.Util.formatToFourDecimals;
 
 public class Conversion {
 	private String fromCode;
@@ -33,11 +33,11 @@ public class Conversion {
 	}
 
 	public String getConversionResultDescription() {
-		return amount + " " + fromCode + " = " + formatToFourDecimals(getConversionResult()) + " " + toCode;
+		return amount + " " + fromCode + " = " + FOUR_DECIMALS_FORMAT.format(getConversionResult()) + " " + toCode;
 	}
 
 	public String getExchangeRateDescription() {
-		return SINGLE_UNIT + " " + fromCode + " = " + formatToFourDecimals(exchangeRate) + " " + toCode;
+		return SINGLE_UNIT + " " + fromCode + " = " + FOUR_DECIMALS_FORMAT.format(exchangeRate) + " " + toCode;
 	}
 
 }
