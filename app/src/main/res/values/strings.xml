@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">RxCurrencyConverter</string>
+	<string name="app_name">RxCurrency Converter</string>
 	<string name="from">From</string>
 	<string name="to">To</string>
 	<string name="amount">Amount</string>

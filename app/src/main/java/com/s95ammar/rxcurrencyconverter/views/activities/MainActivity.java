@@ -95,18 +95,22 @@ public class MainActivity extends DaggerAppCompatActivity {
 		switch (status) {
 			case LOADING:
 				setLoading(true);
+				setViewsEnabled(false);
 				hideWarningOrError();
 				break;
 			case SUCCESS:
 				setLoading(false);
+				setViewsEnabled(true);
 				hideWarningOrError();
 				break;
 			case WARNING:
 				setLoading(false);
+				setViewsEnabled(true);
 				showOutOfDateWarning();
 				break;
 			case ERROR:
 				setLoading(false);
+				setViewsEnabled(false);
 				showDataMissingError();
 				break;
 		}
@@ -121,12 +125,15 @@ public class MainActivity extends DaggerAppCompatActivity {
 
 	private void setLoading(boolean isLoading) {
 		progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-		editTextAmount.setEnabled(!isLoading);
-		spinnerFrom.setEnabled(!isLoading);
-		spinnerTo.setEnabled(!isLoading);
-		buttonConvert.setEnabled(!isLoading);
 	}
 
+	private void setViewsEnabled(boolean isEnabled) {
+		editTextAmount.setEnabled(isEnabled);
+		spinnerFrom.setEnabled(isEnabled);
+		spinnerTo.setEnabled(isEnabled);
+		buttonConvert.setEnabled(isEnabled);
+	}
+	
 	private void setUpSpinners(List<String> spinnerRows) {
 		spinnerFrom.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
 		spinnerTo.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_row, spinnerRows));
