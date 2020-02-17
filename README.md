@@ -21,7 +21,7 @@ Used API: https://rapidapi.com/natkapral/api/currency-converter5.
 
 CONNECTION ✅
 
->  - On start up, all data is updated.
+>  - On start up, all data in the database is updated.
 >  - When the user makes a conversion request, the selected currencies' data in the database are updated and the result is displayed accordingly.
 >
 >    ![SUCCESS2](https://user-images.githubusercontent.com/32682273/74679550-d8268900-51c6-11ea-996c-0c75bafcbe15.gif)
