@@ -28,23 +28,23 @@ Used API: https://rapidapi.com/natkapral/api/currency-converter5.
 
 ### CONNECTION ✅
 
->  - On start up, all data is updated.
+>  - On startup, all data is updated.
 >  - When the user makes a conversion request, the selected currencies' data in the database are updated and the result is displayed accordingly.
->  - If the user disconnects, next conversion request will show a warning (as shown in next sceenario).
+>  - If the user disconnects, the next conversion request will show a warning (as shown in the next scenario).
 >
 >    ![SUCCESS2](https://user-images.githubusercontent.com/32682273/74679550-d8268900-51c6-11ea-996c-0c75bafcbe15.gif)
 
 ### CONNECTION ❌ STORED DATA ✅ ➟ USER RECONNECTS ✅
 
->  - On start up, a warning message is shown.
+>  - On startup, a warning message is shown.
 >  - When the user makes a conversion request, the selected currencies are fetched from the database and the result is displayed with the time of the last update and a warning.
->  - If the user reconnects, next conversion request will hide the warning.
+>  - If the user reconnects, the next conversion request will hide the warning.
 >
 >    ![WARNING2](https://user-images.githubusercontent.com/32682273/74679552-d8bf1f80-51c6-11ea-8f5c-67842881ae03.gif)
 
 ### CONNECTION ❌ STORED DATA ❌ ➟ USER RECONNECTS ✅
 
->  - On start up, an error is shown with a `RETRY` button and user input is blocked.
+>  - On startup, an error is shown with a `RETRY` button and user input is blocked.
 >  - If the user reconnects, clicking the `RETRY` button will hide the error, update all data and unblock user input.
 >
 >    ![ERROR2](https://user-images.githubusercontent.com/32682273/74679553-d957b600-51c6-11ea-8be9-5a4d836f6cad.gif)
