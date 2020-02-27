@@ -3,13 +3,13 @@
 An android app with a very simple UI, that uses a REST API to do simple currency conversions using RxJava & Retrofit, while storing the data using Room for offline usage, following SSOT (single source of truth) principle.
 Used API: https://rapidapi.com/natkapral/api/currency-converter5.
 
-- [Principles](https://github.com/s95ammar/Draft/blob/Readme-test/README.md#principles)
-  - [SSOT (single source of truth)](https://github.com/s95ammar/Draft/blob/Readme-test/README.md#ssot-single-source-of-truth)
-  - [Single responsibility](https://github.com/s95ammar/Draft/blob/Readme-test/README.md#single-responsibility)
-- [Scenarios](https://github.com/s95ammar/Draft/blob/Readme-test/README.md#scenarios)
-  - [CONNECTION ✅](https://github.com/s95ammar/Draft/blob/Readme-test/README.md#connection-)
-  - [CONNECTION ❌ STORED DATA ✅ ➟ USER RECONNECTS ✅](https://github.com/s95ammar/Draft/blob/Readme-test/README.md#connection--stored-data---user-reconnects-)
-  - [CONNECTION ❌ STORED DATA ❌ ➟ USER RECONNECTS ✅](https://github.com/s95ammar/Draft/blob/Readme-test/README.md#connection--stored-data---user-reconnects--1)
+- [Principles](#principles)
+  - [SSOT (single source of truth)](#ssot-single-source-of-truth)
+  - [Single responsibility](#single-responsibility)
+- [App preview & different scenarios](#app-preview--different-scenarios)
+  - [CONNECTION ✅](#connection-)
+  - [CONNECTION ❌ STORED DATA ✅ ➟ USER RECONNECTS ✅](#connection--stored-data---user-reconnects-)
+  - [CONNECTION ❌ STORED DATA ❌ ➟ USER RECONNECTS ✅](#connection--stored-data---user-reconnects--1)
 
 ## Principles
 
@@ -24,7 +24,7 @@ Used API: https://rapidapi.com/natkapral/api/currency-converter5.
 >  - Fetching the data is the responsibility of the [`Repository`](https://github.com/s95ammar/RxCurrencyConverter/blob/master/app/src/main/java/com/s95ammar/rxcurrencyconverter/models/Repository.java).
 
 
-## Scenarios:
+## App preview & different scenarios:
 
 ### CONNECTION ✅
 
