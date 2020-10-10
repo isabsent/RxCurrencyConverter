@@ -1,3 +1,7 @@
+`@Deprecated`
+
+![photo_2020-10-01_14-34-55](https://user-images.githubusercontent.com/32682273/95655604-4979ca00-0b11-11eb-919c-596bb6d3cb0b.jpg)
+
 # RxCurrencyConverter
 
 An android app with a very simple UI, that uses a REST API to do simple currency conversions using RxJava & Retrofit, while storing the data using Room for offline usage, following SSOT (single source of truth) principle.
